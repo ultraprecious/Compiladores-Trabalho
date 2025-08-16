@@ -1,0 +1,23 @@
+Program → (Command)+ EOF
+
+Command → DeclareCommand | AssignCommand | ReadCommand | WriteCommand | ExpressionCommand
+
+DeclareCommand → declare Identifier ;
+
+AssignCommand → Identifier := Expression ;
+
+ReadCommand → leia ( Identifier ) ;
+
+WriteCommand → escreva ( (Identifier | Text) ) ;
+
+ExpressionCommand → Expression ;
+
+Expression → Term ExpressionTail
+
+ExpressionTail → + Term ExpressionTail | - Term ExpressionTail | λ
+
+Term → Factor TermTail
+
+TermTail → * Factor TermTail | / Factor TermTail | λ
+
+Factor → Number | Identifier | ( Expression )
