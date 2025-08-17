@@ -1,4 +1,5 @@
 # Compilador de Linguagem Fictícia (Calculadora)
+Aluno : Felipe Ultramari Domingues | RA: 11202230317 | Disciplina : Compiladores 2025.2
 
 Este projeto é um compilador simples desenvolvido em Java para uma linguagem fictícia de calculadora. Ele foi criado como parte de um trabalho acadêmico com foco na implementação das fases de análise léxica, sintática e semântica básica.
 
