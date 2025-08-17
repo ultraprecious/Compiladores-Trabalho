@@ -112,5 +112,4 @@ O projeto é organizado na seguinte estrutura de arquivos:
 
 ---
 
-*Este `README.md` foi gerado para o trabalho da Modalidade 1 do seu projeto de compiladores.*
 ```
