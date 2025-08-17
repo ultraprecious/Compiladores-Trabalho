@@ -1,4 +1,3 @@
-// Parser.java
 package calculator;
 
 import java.io.IOException;
@@ -7,42 +6,58 @@ public class Parser {
     private Scanner scanner;
     private Token currentToken;
     private SymbolTable symbolTable;
+    private Token la; // Lookahead token
 
-    public Parser(Scanner scanner) throws IOException {
+    public Parser(Scanner scanner, SymbolTable symbolTable) throws IOException {
         this.scanner = scanner;
-        this.symbolTable = new SymbolTable();
-        this.currentToken = scanner.nextToken();
+        this.symbolTable = symbolTable;
+        this.la = scanner.nextToken();
+        this.currentToken = new Token(Token.Kind.EOF, "", -1, -1);
+        scan();
     }
 
-    public void parse() throws IOException {
-        System.out.println("Iniciando a análise...");
-        while (currentToken.kind != Token.Kind.EOF) {
-            command();
+    public void parseSingleLine() throws IOException {
+        command();
+    }
+
+
+    private void scan() throws IOException {
+        currentToken = la;
+        la = scanner.nextToken();
+    }
+
+
+    private void expect(Token.Kind kind) throws IOException {
+        if (currentToken.kind == kind) {
+            scan();
+        } else {
+            error("Esperado " + kind + ", mas encontrado " + currentToken.kind);
         }
-        System.out.println("Análise concluída com sucesso.");
     }
 
     private void command() throws IOException {
-        // Cmd -> CmdLeitura | CmdEscrita | CmdExpr | CmdAtribuicao
         if (currentToken.kind == Token.Kind.KEYWORD_DECLARE) {
             declareCommand();
         } else if (currentToken.kind == Token.Kind.KEYWORD_READ) {
             readCommand();
         } else if (currentToken.kind == Token.Kind.KEYWORD_WRITE) {
             writeCommand();
-        } else if (currentToken.kind == Token.Kind.IDENTIFIER) {
-            assignCommand();
         } else {
-            // Se não for um comando esperado, tenta tratar como uma expressão
-            double result = expression();
-            System.out.println("Resultado da expressão: " + result);
-            expect(Token.Kind.SEMICOLON);
+            // Verifica se é uma atribuição usando o tipo do token atual e o do lookahead (la.kind)
+            if (currentToken.kind == Token.Kind.IDENTIFIER && la.kind == Token.Kind.ASSIGN) {
+                assignCommand();
+            }
+
+            else {
+                double result = expression();
+                System.out.println("Resultado da expressão: " + result);
+                expect(Token.Kind.SEMICOLON);
+            }
         }
     }
 
     private void declareCommand() throws IOException {
         expect(Token.Kind.KEYWORD_DECLARE);
-        // NOVO: Armazena o token do identificador ANTES de consumi-lo
         Token varName = currentToken;
         expect(Token.Kind.IDENTIFIER);
         symbolTable.declareVariable(varName.value);
@@ -63,8 +78,11 @@ public class Parser {
     private void readCommand() throws IOException {
         expect(Token.Kind.KEYWORD_READ);
         expect(Token.Kind.LPAREN);
-        expect(Token.Kind.IDENTIFIER);
+        if (currentToken.kind != Token.Kind.IDENTIFIER) {
+            error("Esperado identificador após 'leia('.");
+        }
         System.out.println("Comando 'leia' reconhecido para a variável '" + currentToken.value + "'.");
+        scan();
         expect(Token.Kind.RPAREN);
         expect(Token.Kind.SEMICOLON);
     }
@@ -102,11 +120,11 @@ public class Parser {
     }
 
     private double term() throws IOException {
-        double result = factor();
+        double result = power();
         while (currentToken.kind == Token.Kind.TIMES || currentToken.kind == Token.Kind.DIVIDE) {
             Token op = currentToken;
             scan();
-            double right = factor();
+            double right = power();
             if (op.kind == Token.Kind.TIMES) {
                 result *= right;
             } else {
@@ -115,6 +133,16 @@ public class Parser {
                 }
                 result /= right;
             }
+        }
+        return result;
+    }
+
+    private double power() throws IOException {
+        double result = factor();
+        if (currentToken.kind == Token.Kind.POWER) {
+            scan();
+            double right = power();
+            result = Math.pow(result, right);
         }
         return result;
     }
@@ -140,18 +168,6 @@ public class Parser {
             error("Esperado número, identificador ou parêntese.");
             return 0;
         }
-    }
-
-    private void expect(Token.Kind kind) throws IOException {
-        if (currentToken.kind == kind) {
-            scan();
-        } else {
-            error("Esperado " + kind + ", mas encontrado " + currentToken.kind);
-        }
-    }
-
-    private void scan() throws IOException {
-        this.currentToken = scanner.nextToken();
     }
 
     private void error(String message) {

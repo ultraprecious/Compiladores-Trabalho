@@ -1,11 +1,10 @@
-// Token.java
 package calculator;
 
 public class Token {
     public enum Kind {
         // Tipos de Tokens
         IDENTIFIER, NUMBER, TEXT,
-        PLUS, MINUS, TIMES, DIVIDE, ASSIGN,
+        PLUS, MINUS, TIMES, DIVIDE, POWER, ASSIGN,
         LPAREN, RPAREN, SEMICOLON, PERIOD,
         KEYWORD_DECLARE, KEYWORD_READ, KEYWORD_WRITE,
         EOF, UNKNOWN

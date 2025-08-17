@@ -1,4 +1,3 @@
-// SymbolTable.java
 package calculator;
 
 import java.util.HashMap;
@@ -16,7 +15,6 @@ public class SymbolTable {
         if (!variables.containsKey(name)) {
             variables.put(name, 0.0);
         } else {
-            // Em um compilador real, isso seria um erro semântico
             throw new RuntimeException("Variável '" + name + "' já foi declarada.");
         }
     }
@@ -26,12 +24,10 @@ public class SymbolTable {
         if (variables.containsKey(name)) {
             variables.put(name, value);
         } else {
-            // Em um compilador real, isso seria um erro semântico
             throw new RuntimeException("Variável '" + name + "' não foi declarada.");
         }
     }
 
-    // Obtém o valor de uma variável
     public double getVariableValue(String name) {
         if (variables.containsKey(name)) {
             return variables.get(name);
@@ -41,7 +37,6 @@ public class SymbolTable {
         }
     }
 
-    // Verifica se a variável existe
     public boolean exists(String name) {
         return variables.containsKey(name);
     }

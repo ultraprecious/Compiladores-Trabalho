@@ -17,7 +17,7 @@ public class Scanner {
     private void nextChar() throws IOException {
         int ch = reader.read();
         if (ch == -1) {
-            currentCh = (char) 0; // Fim do arquivo
+            currentCh = (char) 0;
         } else {
             currentCh = (char) ch;
             column++;
@@ -54,10 +54,10 @@ public class Scanner {
             case '-': nextChar(); return new Token(Token.Kind.MINUS, "-", line, column);
             case '*': nextChar(); return new Token(Token.Kind.TIMES, "*", line, column);
             case '/': nextChar(); return new Token(Token.Kind.DIVIDE, "/", line, column);
+            case '^': nextChar(); return new Token(Token.Kind.POWER, "^", line, column); // NOVO
             case '(': nextChar(); return new Token(Token.Kind.LPAREN, "(", line, column);
             case ')': nextChar(); return new Token(Token.Kind.RPAREN, ")", line, column);
             case ';': nextChar(); return new Token(Token.Kind.SEMICOLON, ";", line, column);
-            // NOVO: Adicionado tratamento para o operador de atribuição ':=
             case ':':
                 nextChar();
                 if (currentCh == '=') {
