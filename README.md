@@ -1,5 +1,3 @@
-
-```markdown
 # Compilador de Linguagem Fictícia (Calculadora)
 
 Este projeto é um compilador simples desenvolvido em Java para uma linguagem fictícia de calculadora. Ele foi criado como parte de um trabalho acadêmico com foco na implementação das fases de análise léxica, sintática e semântica básica.
